@@ -1,0 +1,49 @@
+def combinaciones_nokia(n):
+    if n <= 0: 
+        return 0
+    
+    # Mapeo de teclas adyacentes permitidas.
+    adj = {
+        1: [1, 2, 4],
+        2: [2, 1, 3, 5],
+        3: [3, 2, 6],
+        4: [4, 1, 5, 7],
+        5: [5, 2, 4, 6, 8],
+        6: [6, 3, 5, 9],
+        7: [7, 4, 8],
+        8: [8, 5, 7, 9, 0],
+        9: [9, 6, 8],
+        0: [0, 8]
+    }
+    
+    # Diccionario para almacenar los estados ya calculados (Memoización)
+    memo = {}
+
+    def dfs(longitud, digito):
+        # Caso base: secuencia de longitud 1
+        if longitud == 1:
+            return 1
+            
+        # Retornar el valor si el subproblema ya fue resuelto
+        if (longitud, digito) in memo:
+            return memo[(longitud, digito)]
+            
+        total = 0
+        # Explorar los vecinos adyacentes
+        for siguiente in adj[digito]:
+            total += dfs(longitud - 1, siguiente)
+            
+        # Guardar el resultado en la memoria antes de retornar
+        memo[(longitud, digito)] = total
+        return total
+
+    # Sumar las combinaciones iniciando desde cada tecla posible (0-9)
+    total_combinaciones = 0
+    for i in range(10):
+        total_combinaciones += dfs(n, i)
+
+    return total_combinaciones
+
+# Ejecución de pruebas
+print(f"Combinaciones totales posibles para n=2: {combinaciones_nokia(2)}")
+print(f"Combinaciones totales posibles para n=10: {combinaciones_nokia(10)}")
