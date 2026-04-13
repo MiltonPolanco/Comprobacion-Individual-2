@@ -1,0 +1,60 @@
+def mayor_cruz(grid):
+    # Validar que la matriz no esté vacía
+    if not grid or not grid[0]:
+        return 0
+        
+    n = len(grid)
+    m = len(grid[0])
+    
+    # Creación de las cuatro matrices auxiliares solicitadas
+    left = [[0] * m for _ in range(n)]
+    right = [[0] * m for _ in range(n)]
+    top = [[0] * m for _ in range(n)]
+    bottom = [[0] * m for _ in range(n)]
+    
+    # 1. Llenar las matrices 'left' y 'top' (recorrido de arriba hacia abajo, izquierda a derecha)
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                left[i][j] = left[i][j-1] + 1 if j > 0 else 1
+                top[i][j] = top[i-1][j] + 1 if i > 0 else 1
+                
+    # 2. Llenar las matrices 'right' y 'bottom' (recorrido de abajo hacia arriba, derecha a izquierda)
+    for i in range(n-1, -1, -1):
+        for j in range(m-1, -1, -1):
+            if grid[i][j] == 1:
+                right[i][j] = right[i][j+1] + 1 if j < m - 1 else 1
+                bottom[i][j] = bottom[i+1][j] + 1 if i < n - 1 else 1
+                
+    max_cruz = 0
+    
+    # 3. Encontrar la celda (i, j) que forma la cruz más grande
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                # La longitud del brazo de la cruz está limitada por la dirección más corta
+                longitud_brazo = min(left[i][j], right[i][j], top[i][j], bottom[i][j])
+                
+                # El tamaño total de la cruz es el centro (1) más los 4 brazos
+                # Cada brazo mide (longitud_brazo - 1) porque ya contamos el centro
+                tamano_actual = 4 * (longitud_brazo - 1) + 1
+                max_cruz = max(max_cruz, tamano_actual)
+                
+    return max_cruz
+
+# Matriz de prueba (Input proporcionado en el problema)
+grid = [
+    [1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
+    [1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
+    [1, 1, 1, 0, 1, 1, 0, 1, 0, 1],
+    [0, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+    [1, 1, 1, 0, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 0, 1, 1],
+    [1, 1, 0, 0, 1, 0, 1, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1, 0, 0]
+]
+
+# Ejecución de la prueba
+print(f"El tamaño de la cruz más grande es: {mayor_cruz(grid)}")
